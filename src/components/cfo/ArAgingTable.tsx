@@ -78,7 +78,9 @@ export function ArAgingTable() {
           At-risk only
         </button>
         <div role="group" aria-label="Sort receivables" className="flex items-center gap-1">
-          <span className="eyebrow" aria-hidden>Sort</span>
+          <span className="eyebrow" aria-hidden>
+            Sort
+          </span>
           {(
             [
               ["daysPastDue", "Age"],

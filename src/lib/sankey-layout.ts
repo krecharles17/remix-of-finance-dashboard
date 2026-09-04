@@ -29,10 +29,34 @@ export function buildFlowGraph(a: Aggregate): { nodes: NDef[]; links: LDef[] } {
   const profitPositive = a.operatingIncome >= 0;
 
   const nodes: NDef[] = [
-    { id: "platform", label: "Platform Subscriptions", tone: "revenue", order: 0, display: a.revenueByLine.platform },
-    { id: "usage", label: "Usage & Overages", tone: "revenue", order: 1, display: a.revenueByLine.usage },
-    { id: "services", label: "Professional Services", tone: "revenue", order: 2, display: a.revenueByLine.services },
-    { id: "marketplace", label: "Marketplace Rev-Share", tone: "revenue", order: 3, display: a.revenueByLine.marketplace },
+    {
+      id: "platform",
+      label: "Platform Subscriptions",
+      tone: "revenue",
+      order: 0,
+      display: a.revenueByLine.platform,
+    },
+    {
+      id: "usage",
+      label: "Usage & Overages",
+      tone: "revenue",
+      order: 1,
+      display: a.revenueByLine.usage,
+    },
+    {
+      id: "services",
+      label: "Professional Services",
+      tone: "revenue",
+      order: 2,
+      display: a.revenueByLine.services,
+    },
+    {
+      id: "marketplace",
+      label: "Marketplace Rev-Share",
+      tone: "revenue",
+      order: 3,
+      display: a.revenueByLine.marketplace,
+    },
 
     { id: "revenue", label: "Total Revenue", tone: "gross", order: 5, display: a.totalRevenue },
 
@@ -41,7 +65,13 @@ export function buildFlowGraph(a: Aggregate): { nodes: NDef[]; links: LDef[] } {
 
     { id: "hosting", label: "Cloud & Hosting", tone: "cost", order: 8, display: a.cogs.hosting },
     { id: "support", label: "Customer Support", tone: "cost", order: 9, display: a.cogs.support },
-    { id: "delivery", label: "Service Delivery", tone: "cost", order: 10, display: a.cogs.delivery },
+    {
+      id: "delivery",
+      label: "Service Delivery",
+      tone: "cost",
+      order: 10,
+      display: a.cogs.delivery,
+    },
     { id: "rd", label: "R&D", tone: "cost", order: 11, display: a.opex.rd },
     { id: "sm", label: "Sales & Marketing", tone: "cost", order: 12, display: a.opex.sm },
     { id: "ga", label: "General & Admin", tone: "cost", order: 13, display: a.opex.ga },
@@ -70,17 +100,71 @@ export function buildFlowGraph(a: Aggregate): { nodes: NDef[]; links: LDef[] } {
 
   const min = 1; // keep every ribbon renderable
   const links: LDef[] = [
-    { source: "platform", target: "revenue", value: Math.max(min, a.revenueByLine.platform), tone: "revenue", order: 0 },
-    { source: "usage", target: "revenue", value: Math.max(min, a.revenueByLine.usage), tone: "revenue", order: 1 },
-    { source: "services", target: "revenue", value: Math.max(min, a.revenueByLine.services), tone: "revenue", order: 2 },
-    { source: "marketplace", target: "revenue", value: Math.max(min, a.revenueByLine.marketplace), tone: "revenue", order: 3 },
+    {
+      source: "platform",
+      target: "revenue",
+      value: Math.max(min, a.revenueByLine.platform),
+      tone: "revenue",
+      order: 0,
+    },
+    {
+      source: "usage",
+      target: "revenue",
+      value: Math.max(min, a.revenueByLine.usage),
+      tone: "revenue",
+      order: 1,
+    },
+    {
+      source: "services",
+      target: "revenue",
+      value: Math.max(min, a.revenueByLine.services),
+      tone: "revenue",
+      order: 2,
+    },
+    {
+      source: "marketplace",
+      target: "revenue",
+      value: Math.max(min, a.revenueByLine.marketplace),
+      tone: "revenue",
+      order: 3,
+    },
 
-    { source: "revenue", target: "cogs", value: Math.max(min, a.totalCogs), tone: "cost", order: 4 },
-    { source: "revenue", target: "gross", value: Math.max(min, a.grossProfit), tone: "gross", order: 5 },
+    {
+      source: "revenue",
+      target: "cogs",
+      value: Math.max(min, a.totalCogs),
+      tone: "cost",
+      order: 4,
+    },
+    {
+      source: "revenue",
+      target: "gross",
+      value: Math.max(min, a.grossProfit),
+      tone: "gross",
+      order: 5,
+    },
 
-    { source: "cogs", target: "hosting", value: Math.max(min, a.cogs.hosting), tone: "cost", order: 6 },
-    { source: "cogs", target: "support", value: Math.max(min, a.cogs.support), tone: "cost", order: 7 },
-    { source: "cogs", target: "delivery", value: Math.max(min, a.cogs.delivery), tone: "cost", order: 8 },
+    {
+      source: "cogs",
+      target: "hosting",
+      value: Math.max(min, a.cogs.hosting),
+      tone: "cost",
+      order: 6,
+    },
+    {
+      source: "cogs",
+      target: "support",
+      value: Math.max(min, a.cogs.support),
+      tone: "cost",
+      order: 7,
+    },
+    {
+      source: "cogs",
+      target: "delivery",
+      value: Math.max(min, a.cogs.delivery),
+      tone: "cost",
+      order: 8,
+    },
 
     { source: "gross", target: "rd", value: Math.max(min, a.opex.rd), tone: "cost", order: 9 },
     { source: "gross", target: "sm", value: Math.max(min, a.opex.sm), tone: "cost", order: 10 },

@@ -20,7 +20,6 @@ import {
   AR_AT_RISK,
   AR_TOTAL,
   INVOICES,
-
   NOT_AVAILABLE,
   fmtPctOr,
   formatCurrency,
@@ -28,7 +27,6 @@ import {
   periodRange,
   runwayMonths,
   safeDiv,
-
   type Granularity,
   type Scenario,
 } from "@/data/finance-data";
@@ -43,7 +41,6 @@ import { ArAgingTable } from "@/components/cfo/ArAgingTable";
 import { Panel } from "@/components/cfo/Panel";
 import { useStage } from "@/lib/motion";
 import { useGeneratedCommentary } from "@/lib/use-generated-commentary";
-
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -76,10 +73,9 @@ function NoPeriods() {
         </h1>
         <p className="mt-3 text-[12.5px] leading-relaxed text-ink-faint">
           This dashboard renders from the monthly records in{" "}
-          <span className="num">src/data/finance-data.ts</span>. Add at least one
-          period to <span className="num">MONTHS</span>, conforming to{" "}
-          <span className="num">MonthRecord</span>, and every panel will populate
-          from it.
+          <span className="num">src/data/finance-data.ts</span>. Add at least one period to{" "}
+          <span className="num">MONTHS</span>, conforming to{" "}
+          <span className="num">MonthRecord</span>, and every panel will populate from it.
         </p>
       </div>
     </div>
@@ -96,14 +92,10 @@ function CommandCenter() {
   // set of assumptions and should not outlive the session silently.
   const [generated, setGenerated] = useState<GeneratedScenario[]>([]);
 
-  const allScenarios = useMemo<Scenario[]>(
-    () => [...SCENARIOS, ...generated],
-    [generated],
-  );
+  const allScenarios = useMemo<Scenario[]>(() => [...SCENARIOS, ...generated], [generated]);
 
   const periods = useMemo(() => periodsFor(granularity), [granularity]);
-  const period =
-    periods.find((p) => p.id === periodId) ?? periods[periods.length - 1];
+  const period = periods.find((p) => p.id === periodId) ?? periods[periods.length - 1];
   const scenario = allScenarios.find((s) => s.key === scenarioKey) ?? SCENARIOS[0];
 
   /** Switching granularity lands on the most recent period of the new kind. */
@@ -215,19 +207,14 @@ function CommandCenter() {
     },
   ];
 
-
   // ---- variance ----
-  const varianceLines = useMemo(
-    () => buildVariance(period.months, scenario),
-    [period, scenario],
-  );
+  const varianceLines = useMemo(() => buildVariance(period.months, scenario), [period, scenario]);
   const budgetOI = useMemo(() => budgetedOperatingIncome(period.months), [period]);
   const steps = useMemo(
     () => buildSteps(varianceLines, budgetOI, agg.operatingIncome),
     [varianceLines, budgetOI, agg.operatingIncome],
   );
-  const selectedLine =
-    varianceLines.find((l) => l.key === selectedVariance) ?? null;
+  const selectedLine = varianceLines.find((l) => l.key === selectedVariance) ?? null;
 
   // Layer two: session-only generated commentary. Nothing here runs on mount,
   // on period change, or on scenario change — every call is user-initiated.
@@ -248,9 +235,7 @@ function CommandCenter() {
 
   const [guideOpen, setGuideOpen] = useState(false);
 
-  const pendingCount = varianceLines.filter(
-    (l) => !l.commentary && !commentary.get(l.key),
-  ).length;
+  const pendingCount = varianceLines.filter((l) => !l.commentary && !commentary.get(l.key)).length;
 
   return (
     <div className="min-h-screen bg-background">
@@ -258,22 +243,22 @@ function CommandCenter() {
         {/* ================= masthead: identity only ================= */}
         <header className="stage flex flex-wrap items-start justify-between gap-3 py-4 sm:py-5">
           <div className="min-w-0">
-          <div className="flex items-center gap-2.5">
-            <span
-              className="inline-block h-1.5 w-1.5 rounded-full"
-              style={{ background: "var(--mint)" }}
-            />
-            <span className="eyebrow">
-              {BRAND.company} · {BRAND.eyebrow}
-            </span>
-          </div>
-          <h1 className="mt-1.5 text-[clamp(1.65rem,3vw,2.35rem)] font-bold leading-[1.02] text-foreground">
-            {BRAND.title}
-          </h1>
-          <p className="mt-1.5 max-w-2xl text-[12.5px] leading-relaxed text-ink-faint">
-            {scenario.blurb} {BRAND.subtitlePrefix} {period.label} · {agg.headcount}{" "}
-            employees at period end · books locked by the controller.
-          </p>
+            <div className="flex items-center gap-2.5">
+              <span
+                className="inline-block h-1.5 w-1.5 rounded-full"
+                style={{ background: "var(--mint)" }}
+              />
+              <span className="eyebrow">
+                {BRAND.company} · {BRAND.eyebrow}
+              </span>
+            </div>
+            <h1 className="mt-1.5 text-[clamp(1.65rem,3vw,2.35rem)] font-bold leading-[1.02] text-foreground">
+              {BRAND.title}
+            </h1>
+            <p className="mt-1.5 max-w-2xl text-[12.5px] leading-relaxed text-ink-faint">
+              {scenario.blurb} {BRAND.subtitlePrefix} {period.label} · {agg.headcount} employees at
+              period end · books locked by the controller.
+            </p>
           </div>
 
           <button
@@ -292,7 +277,6 @@ function CommandCenter() {
         </header>
 
         <RemixGuide open={guideOpen} onClose={() => setGuideOpen(false)} />
-
 
         {/* ================= instrument bar ================= */}
         <ControlBar
@@ -342,7 +326,6 @@ function CommandCenter() {
             subtitleHint="Revenue streams merge into one trunk, then split through cost of revenue and operating expense into what is left over. Hover any ribbon to trace it end to end."
             headerClassName="px-5 pb-3 pt-4 sm:px-6 sm:pb-3 sm:pt-5"
             delay={260}
-
             aside={
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 <Legend swatch="var(--signal)" glyph="in" label="Revenue" />
@@ -357,8 +340,7 @@ function CommandCenter() {
                   <div
                     className="num text-sm font-medium"
                     style={{
-                      color:
-                        agg.operatingIncome >= 0 ? "var(--mint)" : "var(--ember)",
+                      color: agg.operatingIncome >= 0 ? "var(--mint)" : "var(--ember)",
                     }}
                   >
                     {fmtPctOr(opMargin, 1)}
@@ -370,14 +352,13 @@ function CommandCenter() {
             empty={
               agg.totalRevenue <= 0 ? (
                 <>
-                  No revenue recorded for {period.label}, so there is nothing to
-                  trace through the flow. Add revenue figures for this period in{" "}
+                  No revenue recorded for {period.label}, so there is nothing to trace through the
+                  flow. Add revenue figures for this period in{" "}
                   <span className="num">src/data/finance-data.ts</span>.
                 </>
               ) : undefined
             }
           >
-
             <SankeyFlow
               agg={agg}
               stateKey={`${period.id}|${scenarioKey}`}
@@ -410,11 +391,10 @@ function CommandCenter() {
             empty={
               !isNum(agg.cashBalance) || agg.cashBalance <= 0 ? (
                 <>
-                  The forecast starts from the closing cash balance for{" "}
-                  {period.label}, which is missing or not positive. Set{" "}
-                  <span className="num">cashBalance</span> on this period in{" "}
-                  <span className="num">src/data/finance-data.ts</span> to project
-                  the next 13 weeks.
+                  The forecast starts from the closing cash balance for {period.label}, which is
+                  missing or not positive. Set <span className="num">cashBalance</span> on this
+                  period in <span className="num">src/data/finance-data.ts</span> to project the
+                  next 13 weeks.
                 </>
               ) : undefined
             }
@@ -446,15 +426,14 @@ function CommandCenter() {
                 <>
                   No outstanding receivables. Add your AR ledger to{" "}
                   <span className="num">INVOICES</span> in{" "}
-                  <span className="num">src/data/finance-data.ts</span> to see aging
-                  buckets and collection risk.
+                  <span className="num">src/data/finance-data.ts</span> to see aging buckets and
+                  collection risk.
                 </>
               ) : undefined
             }
           >
             <ArAgingTable />
           </Panel>
-
         </div>
 
         {/* ================= waterfall ================= */}
@@ -483,23 +462,20 @@ function CommandCenter() {
                     <Legend swatch="var(--signal)" label="AI-generated" glyph="•" />
                   </div>
                 </div>
-              <div className="text-right">
-                <div className="eyebrow">Net variance</div>
-                <div
-                  className="num text-sm font-medium"
-                  style={{
-                    color:
-                      agg.operatingIncome - budgetOI >= 0
-                        ? "var(--mint)"
-                        : "var(--ember)",
-                  }}
-                >
-                  {agg.operatingIncome - budgetOI >= 0 ? "+" : "−"}
-                  {formatCurrency(Math.abs(agg.operatingIncome - budgetOI), {
-                    compact: true,
-                  })}
+                <div className="text-right">
+                  <div className="eyebrow">Net variance</div>
+                  <div
+                    className="num text-sm font-medium"
+                    style={{
+                      color: agg.operatingIncome - budgetOI >= 0 ? "var(--mint)" : "var(--ember)",
+                    }}
+                  >
+                    {agg.operatingIncome - budgetOI >= 0 ? "+" : "−"}
+                    {formatCurrency(Math.abs(agg.operatingIncome - budgetOI), {
+                      compact: true,
+                    })}
+                  </div>
                 </div>
-              </div>
               </div>
             }
           >
@@ -519,8 +495,8 @@ function CommandCenter() {
           </p>
           <p className="num text-[10.5px] tracking-[0.04em] text-ink-faint">
             Showing {period.label}
-            {partialNote ? " (incomplete)" : ""} · dataset{" "}
-            {periodRange() ?? NOT_AVAILABLE} · {MONTHS.length} months
+            {partialNote ? " (incomplete)" : ""} · dataset {periodRange() ?? NOT_AVAILABLE} ·{" "}
+            {MONTHS.length} months
           </p>
         </footer>
       </div>
@@ -533,9 +509,7 @@ function CommandCenter() {
         generated={selectedLine ? commentary.get(selectedLine.key) : undefined}
         streaming={selectedLine ? commentary.streaming(selectedLine.key) : undefined}
         generateError={selectedLine ? commentary.error(selectedLine.key) : undefined}
-        onGenerate={
-          selectedLine ? () => commentary.generate(selectedLine) : undefined
-        }
+        onGenerate={selectedLine ? () => commentary.generate(selectedLine) : undefined}
       />
     </div>
   );
@@ -566,15 +540,7 @@ function Legend({
   );
 }
 
-function Readout({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: string;
-  tone?: string;
-}) {
+function Readout({ label, value, tone }: { label: string; value: string; tone?: string }) {
   return (
     <div>
       <div className="eyebrow">{label}</div>

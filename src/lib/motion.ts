@@ -15,7 +15,6 @@ export function useCountUp(target: number, duration = 1400, delay = 0): number {
   useEffect(() => {
     let raf = 0;
     let start = 0;
-    let timer: ReturnType<typeof setTimeout>;
     const from = 0;
 
     const tick = (now: number) => {
@@ -26,7 +25,7 @@ export function useCountUp(target: number, duration = 1400, delay = 0): number {
       else setValue(targetRef.current);
     };
 
-    timer = setTimeout(() => {
+    const timer = setTimeout(() => {
       raf = requestAnimationFrame(tick);
     }, delay);
 
@@ -34,7 +33,6 @@ export function useCountUp(target: number, duration = 1400, delay = 0): number {
       clearTimeout(timer);
       cancelAnimationFrame(raf);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [duration, delay]);
 
   // If the target changes after the initial count-up, glide to it.

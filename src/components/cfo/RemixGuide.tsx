@@ -138,9 +138,9 @@ export function RemixGuide({ open, onClose }: { open: boolean; onClose: () => vo
             <p className="mt-2">
               Paste your figures into Lovable chat and ask the agent to rewrite the data file. This
               works better than editing by hand because the fiddly part is mapping your chart of
-              accounts onto this model — four revenue lines, three cost-of-revenue categories,
-              three operating expense categories — and the agent does that mapping for you, keeping
-              the existing types intact.
+              accounts onto this model — four revenue lines, three cost-of-revenue categories, three
+              operating expense categories — and the agent does that mapping for you, keeping the
+              existing types intact.
             </p>
 
             <div className="mt-4 rounded-md border border-hairline bg-surface-raised/60 p-3.5">
@@ -170,18 +170,17 @@ export function RemixGuide({ open, onClose }: { open: boolean; onClose: () => vo
               customer, amount, days past due, and a risk flag.
             </p>
             <p className="mt-2">
-              Supply everything monthly. Quarter and year-to-date views are derived, and they
-              follow one rule: flows sum, stocks do not. Revenue, cost and operating expense add up
-              across the months of a period, while closing cash and headcount take the value of the
-              final month, because they are positions rather than flows. Ratios such as gross
-              margin are computed from period totals rather than averaged. Set{" "}
-              <span className="num">fiscalYearStartMonth</span> in <span className="num">BRAND</span>{" "}
-              so quarters and the year to date line up with your fiscal calendar. Receivables have
-              no date column, so the AR panel always shows the present-day position whatever period
-              is selected.
+              Supply everything monthly. Quarter and year-to-date views are derived, and they follow
+              one rule: flows sum, stocks do not. Revenue, cost and operating expense add up across
+              the months of a period, while closing cash and headcount take the value of the final
+              month, because they are positions rather than flows. Ratios such as gross margin are
+              computed from period totals rather than averaged. Set{" "}
+              <span className="num">fiscalYearStartMonth</span> in{" "}
+              <span className="num">BRAND</span> so quarters and the year to date line up with your
+              fiscal calendar. Receivables have no date column, so the AR panel always shows the
+              present-day position whatever period is selected.
             </p>
           </section>
-
 
           <section className="mt-7 pb-2">
             <h4 className="text-[15px] font-semibold text-foreground">A sample file</h4>

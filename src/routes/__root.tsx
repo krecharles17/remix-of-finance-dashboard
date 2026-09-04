@@ -14,7 +14,6 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { THEME_BOOTSTRAP } from "@/components/cfo/ThemeToggle";
 import { BRAND } from "@/data/finance-data";
 
-
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -92,11 +91,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "CFO Command Center" },
       { property: "og:title", content: "CFO Command Center" },
       { name: "twitter:title", content: "CFO Command Center" },
-      { name: "description", content: "Finance Flow (02) is a CFO Command Center for B2B SaaS companies, offering interactive financial reporting." },
-      { property: "og:description", content: "Finance Flow (02) is a CFO Command Center for B2B SaaS companies, offering interactive financial reporting." },
-      { name: "twitter:description", content: "Finance Flow (02) is a CFO Command Center for B2B SaaS companies, offering interactive financial reporting." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b53503de-abaf-4402-8365-c3bf43532cd4/id-preview-27cb71b5--7f69ca53-515e-44f0-b75d-9351b878c7d4.lovable.app-1785223448087.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b53503de-abaf-4402-8365-c3bf43532cd4/id-preview-27cb71b5--7f69ca53-515e-44f0-b75d-9351b878c7d4.lovable.app-1785223448087.png" },
+      {
+        name: "description",
+        content:
+          "Finance Flow (02) is a CFO Command Center for B2B SaaS companies, offering interactive financial reporting.",
+      },
+      {
+        property: "og:description",
+        content:
+          "Finance Flow (02) is a CFO Command Center for B2B SaaS companies, offering interactive financial reporting.",
+      },
+      {
+        name: "twitter:description",
+        content:
+          "Finance Flow (02) is a CFO Command Center for B2B SaaS companies, offering interactive financial reporting.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b53503de-abaf-4402-8365-c3bf43532cd4/id-preview-27cb71b5--7f69ca53-515e-44f0-b75d-9351b878c7d4.lovable.app-1785223448087.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b53503de-abaf-4402-8365-c3bf43532cd4/id-preview-27cb71b5--7f69ca53-515e-44f0-b75d-9351b878c7d4.lovable.app-1785223448087.png",
+      },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
