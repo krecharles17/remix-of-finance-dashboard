@@ -17,8 +17,7 @@ const good = {
   opexMult: { rd: 1, sm: 0.7, ga: 1 },
 };
 
-const parse = (raw: unknown, keys: string[] = []) =>
-  parseScenario(raw, "a described case", keys);
+const parse = (raw: unknown, keys: string[] = []) => parseScenario(raw, "a described case", keys);
 
 describe("parseScenario", () => {
   it("accepts a well-formed payload and marks it generated", () => {
@@ -48,9 +47,9 @@ describe("parseScenario", () => {
   });
 
   it("rejects invented lines the dataset does not have", () => {
-    expect(() =>
-      parse({ ...good, revenueMult: { ...good.revenueMult, hardware: 1.1 } }),
-    ).toThrow(/invented lines/);
+    expect(() => parse({ ...good, revenueMult: { ...good.revenueMult, hardware: 1.1 } })).toThrow(
+      /invented lines/,
+    );
   });
 
   it("rejects non-numeric and non-finite multipliers", () => {

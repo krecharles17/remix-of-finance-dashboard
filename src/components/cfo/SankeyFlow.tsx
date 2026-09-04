@@ -12,16 +12,10 @@ import {
   type Snapshot,
   type Tone,
 } from "@/lib/sankey-layout";
-import {
-  fmtPctOr,
-  formatCurrency,
-  safeDiv,
-  type Aggregate,
-} from "@/data/finance-data";
+import { fmtPctOr, formatCurrency, safeDiv, type Aggregate } from "@/data/finance-data";
 import { useMeasure } from "@/lib/motion";
 
-const easeInOut = (t: number) =>
-  t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 const TONE_FILL: Record<Tone, string> = {
   revenue: "url(#g-revenue)",
@@ -122,7 +116,12 @@ export function SankeyFlow({ agg, stateKey, active, height = 540 }: Props) {
   const activeNode = hoverNode ?? (focusKind === "node" ? focusKey : null);
 
   const { litLinks, litNodes, focusLink } = useMemo(() => {
-    if (!frame) return { litLinks: null as Set<string> | null, litNodes: null as Set<string> | null, focusLink: null as LinkSnap | null };
+    if (!frame)
+      return {
+        litLinks: null as Set<string> | null,
+        litNodes: null as Set<string> | null,
+        focusLink: null as LinkSnap | null,
+      };
     const tracedLink = activeLink;
     const tracedNode = activeNode;
     if (tracedLink && frame.links[tracedLink]) {
@@ -179,8 +178,7 @@ export function SankeyFlow({ agg, stateKey, active, height = 540 }: Props) {
 
   const moveCursor = (key: string) => {
     if (!frame) return false;
-    const cur =
-      focusKind && focusKey ? { kind: focusKind, key: focusKey } : null;
+    const cur = focusKind && focusKey ? { kind: focusKind, key: focusKey } : null;
 
     const nodesAtDepth = (depth: number) =>
       frame.nodeOrder
@@ -302,9 +300,9 @@ export function SankeyFlow({ agg, stateKey, active, height = 540 }: Props) {
       }}
     >
       <p className="sr-only">
-        Interactive money flow diagram. Use the left and right arrow keys to step
-        upstream and downstream along the flow, the up and down arrow keys to move
-        between items at the same point in the flow, and Escape to leave the diagram.
+        Interactive money flow diagram. Use the left and right arrow keys to step upstream and
+        downstream along the flow, the up and down arrow keys to move between items at the same
+        point in the flow, and Escape to leave the diagram.
       </p>
       {svgW > 0 && frame && (
         <svg
@@ -315,7 +313,6 @@ export function SankeyFlow({ agg, stateKey, active, height = 540 }: Props) {
           className="block overflow-visible"
           focusable="false"
         >
-
           <defs>
             <linearGradient id="g-revenue" x1="0" x2="1">
               <stop offset="0%" stopColor="var(--signal-deep)" />
@@ -392,9 +389,7 @@ export function SankeyFlow({ agg, stateKey, active, height = 540 }: Props) {
                       style={{
                         outline: "none",
                         stroke:
-                          focusKind === "link" && focusKey === key
-                            ? "var(--ring)"
-                            : "transparent",
+                          focusKind === "link" && focusKey === key ? "var(--ring)" : "transparent",
                         strokeWidth: 2,
                       }}
                       onPointerEnter={() => {
@@ -536,21 +531,23 @@ export function SankeyFlow({ agg, stateKey, active, height = 540 }: Props) {
 
 function shortLabel(label: string): string {
   return (
-    {
-      "Platform Subscriptions": "Platform",
-      "Usage & Overages": "Usage",
-      "Professional Services": "Services",
-      "Marketplace Rev-Share": "Marketplace",
-      "Total Revenue": "Revenue",
-      "Cost of Revenue": "COGS",
-      "Gross Profit": "Gross",
-      "Cloud & Hosting": "Hosting",
-      "Customer Support": "Support",
-      "Service Delivery": "Delivery",
-      "Sales & Marketing": "S&M",
-      "General & Admin": "G&A",
-      "Operating Income": "Op. income",
-      "Funded from Cash Reserves": "From reserves",
-    } as Record<string, string>
-  )[label] ?? label;
+    (
+      {
+        "Platform Subscriptions": "Platform",
+        "Usage & Overages": "Usage",
+        "Professional Services": "Services",
+        "Marketplace Rev-Share": "Marketplace",
+        "Total Revenue": "Revenue",
+        "Cost of Revenue": "COGS",
+        "Gross Profit": "Gross",
+        "Cloud & Hosting": "Hosting",
+        "Customer Support": "Support",
+        "Service Delivery": "Delivery",
+        "Sales & Marketing": "S&M",
+        "General & Admin": "G&A",
+        "Operating Income": "Op. income",
+        "Funded from Cash Reserves": "From reserves",
+      } as Record<string, string>
+    )[label] ?? label
+  );
 }

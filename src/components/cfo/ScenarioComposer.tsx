@@ -59,7 +59,6 @@ export function ScenarioComposerTrigger({
         className="inline-block h-1.5 w-1.5 rounded-full"
         style={{ background: "var(--signal)" }}
       />
-
       Model a scenario
     </button>
   );
@@ -105,11 +104,7 @@ export function ScenarioComposerRow({
       setText("");
       onClose();
     } catch (err) {
-      setError(
-        err instanceof ScenarioRejected
-          ? err.message
-          : "Could not model that description.",
-      );
+      setError(err instanceof ScenarioRejected ? err.message : "Could not model that description.");
     } finally {
       setBusy(false);
     }
@@ -200,7 +195,6 @@ export function ScenarioComposerRow({
   );
 }
 
-
 /**
  * The derived assumptions for the selected generated scenario, as a popover
  * over the layout. It is driven by the selection, never by a local copy, so
@@ -259,9 +253,7 @@ export function MultiplierPopover({
           <span className="eyebrow" style={{ color: "var(--signal)" }}>
             Modelled assumptions
           </span>
-          <p className="mt-1 truncate text-[12px] font-medium text-foreground">
-            {scenario.label}
-          </p>
+          <p className="mt-1 truncate text-[12px] font-medium text-foreground">{scenario.label}</p>
         </div>
         <button
           type="button"
@@ -274,8 +266,8 @@ export function MultiplierPopover({
       </div>
 
       <p className="px-4 pt-3 text-[11px] leading-relaxed text-ink-faint">
-        Stated assumptions, not booked figures. Adjust any of them and the
-        dashboard recomputes from your actuals.
+        Stated assumptions, not booked figures. Adjust any of them and the dashboard recomputes from
+        your actuals.
       </p>
 
       <div className="max-h-[52vh] overflow-y-auto px-4 pb-4 pt-3">
@@ -314,19 +306,11 @@ export function MultiplierPopover({
   );
 }
 
-function MultGroup({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function MultGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-3 last:mb-0">
       <h3 className="eyebrow mb-1 text-ink-faint">{title}</h3>
-      <div className="divide-y divide-hairline rounded-lg border border-hairline">
-        {children}
-      </div>
+      <div className="divide-y divide-hairline rounded-lg border border-hairline">{children}</div>
     </section>
   );
 }
@@ -419,11 +403,10 @@ function MultInput({
           role="status"
           className="mt-1 text-[10px] leading-snug text-[var(--destructive)]"
         >
-          Outside the plausible planning range of {MULT_MIN}–{MULT_MAX}. Rejected rather
-          than clamped — a silently corrected assumption is a wrong assumption.
+          Outside the plausible planning range of {MULT_MIN}–{MULT_MAX}. Rejected rather than
+          clamped — a silently corrected assumption is a wrong assumption.
         </p>
       )}
     </div>
   );
 }
-

@@ -50,8 +50,6 @@ export const Route = createFileRoute("/api/commentary")({
             maximumFractionDigits: 0,
           }).format(v);
 
-
-
         const favourable = n("impact") >= 0;
         const prompt = [
           `Line: ${s("lineLabel")} (${s("kind")} line)`,

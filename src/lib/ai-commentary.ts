@@ -80,9 +80,7 @@ export function isGeneratedCommentary(v: unknown): v is GeneratedCommentary {
     typeof c.narrative === "string" &&
     c.narrative.length > 0 &&
     Array.isArray(c.drivers) &&
-    c.drivers.every(
-      (d) => typeof d?.label === "string" && typeof d?.value === "string",
-    )
+    c.drivers.every((d) => typeof d?.label === "string" && typeof d?.value === "string")
   );
 }
 
@@ -159,4 +157,3 @@ export async function streamCommentary(
     if (signal) signal.removeEventListener("abort", relay);
   }
 }
-

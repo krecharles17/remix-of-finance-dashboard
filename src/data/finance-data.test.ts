@@ -101,9 +101,7 @@ describe("flow versus stock aggregation", () => {
     const q = MONTHS.slice(0, 3);
     const last = aggregate(q[2], base);
     expect(annualisedRunRate(q, base)).toBeCloseTo(
-      (last.revenueByLine.platform +
-        last.revenueByLine.usage +
-        last.revenueByLine.marketplace) *
+      (last.revenueByLine.platform + last.revenueByLine.usage + last.revenueByLine.marketplace) *
         12,
       6,
     );
@@ -129,9 +127,7 @@ describe("periods", () => {
 
   it("sorts unsorted input before grouping", () => {
     const shuffled = [...MONTHS].reverse();
-    expect(periodsFor("month", shuffled).map((p) => p.id)).toEqual(
-      MONTHS.map((m) => m.id),
-    );
+    expect(periodsFor("month", shuffled).map((p) => p.id)).toEqual(MONTHS.map((m) => m.id));
   });
 
   it("makes year to date cumulative from the fiscal year start", () => {
@@ -164,8 +160,12 @@ describe("variance", () => {
   });
 
   it("signs impact by line kind", () => {
-    expect(varianceImpact({ key: "a", label: "a", kind: "revenue", budget: 100, actual: 130 })).toBe(30);
-    expect(varianceImpact({ key: "b", label: "b", kind: "cost", budget: 100, actual: 130 })).toBe(-30);
+    expect(
+      varianceImpact({ key: "a", label: "a", kind: "revenue", budget: 100, actual: 130 }),
+    ).toBe(30);
+    expect(varianceImpact({ key: "b", label: "b", kind: "cost", budget: 100, actual: 130 })).toBe(
+      -30,
+    );
   });
 
   it("returns null share when the budget line is zero", () => {
@@ -244,10 +244,7 @@ describe("validateDataset", () => {
   });
 
   it("names duplicate ids and broken figures instead of throwing", () => {
-    const broken = [
-      { ...MONTHS[0] },
-      { ...MONTHS[0], cashBalance: Number.NaN },
-    ] as MonthRecord[];
+    const broken = [{ ...MONTHS[0] }, { ...MONTHS[0], cashBalance: Number.NaN }] as MonthRecord[];
     const problems = validateDataset(broken, []);
     expect(problems.some((p) => /duplicates an earlier month id/.test(p))).toBe(true);
     expect(problems.some((p) => /cashBalance is not a number/.test(p))).toBe(true);

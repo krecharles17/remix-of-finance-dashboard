@@ -7,7 +7,6 @@ import {
   type VarianceLine,
 } from "@/data/finance-data";
 
-
 import type { GeneratedCommentary } from "@/lib/ai-commentary";
 
 interface Props {
@@ -92,7 +91,6 @@ export function VariancePanel({
     };
   }, [open]);
 
-
   return (
     <>
       <div
@@ -118,7 +116,6 @@ export function VariancePanel({
       >
         {line && (
           <>
-
             <header className="flex items-start justify-between gap-4 border-b border-border/70 p-6">
               <div>
                 <div className="eyebrow">
@@ -138,7 +135,6 @@ export function VariancePanel({
                 aria-label="Close variance detail"
                 className="-mr-1 -mt-1 rounded p-1.5 text-ink-faint transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ring)]"
               >
-
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
                   <path
                     d="M3 3l9 9M12 3l-9 9"
@@ -153,8 +149,16 @@ export function VariancePanel({
             <div className="flex-1 overflow-y-auto p-6">
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { l: "Budget", v: formatCurrency(line.budget, { compact: true }), c: "var(--ink-dim)" },
-                  { l: "Actual", v: formatCurrency(line.actual, { compact: true }), c: "var(--foreground)" },
+                  {
+                    l: "Budget",
+                    v: formatCurrency(line.budget, { compact: true }),
+                    c: "var(--ink-dim)",
+                  },
+                  {
+                    l: "Actual",
+                    v: formatCurrency(line.actual, { compact: true }),
+                    c: "var(--foreground)",
+                  },
                   {
                     l: favourable ? "Favourable" : "Unfavourable",
                     v: `${impact >= 0 ? "+" : "−"}${formatCurrency(Math.abs(impact), { compact: true })}`,
@@ -179,14 +183,10 @@ export function VariancePanel({
               </div>
 
               {incompleteNote && (
-                <p
-                  className="mt-2 text-[11px] leading-relaxed"
-                  style={{ color: "var(--ember)" }}
-                >
+                <p className="mt-2 text-[11px] leading-relaxed" style={{ color: "var(--ember)" }}>
                   {incompleteNote}
                 </p>
               )}
-
 
               <div className="mt-6">
                 <div className="eyebrow">Plain-English read</div>
@@ -200,8 +200,7 @@ export function VariancePanel({
                       {formatCurrency(Math.abs(impact), { compact: true })}{" "}
                       {favourable ? "favourable" : "unfavourable"} to budget (
                       {impact >= 0 ? "+" : "−"}
-                      {fmtPctOr(variancePctOfBudget(line), 1)}) on{" "}
-                      {line.label}.
+                      {fmtPctOr(variancePctOfBudget(line), 1)}) on {line.label}.
                     </p>
 
                     {/* Layer two: generated prose, always visibly marked. */}
@@ -243,16 +242,14 @@ export function VariancePanel({
                                 className="flex items-baseline justify-between gap-4 py-2"
                               >
                                 <span className="text-[12px] text-ink-dim">{d.label}</span>
-                                <span className="num text-[11.5px] text-foreground">
-                                  {d.value}
-                                </span>
+                                <span className="num text-[11.5px] text-foreground">{d.value}</span>
                               </div>
                             ))}
                           </div>
                         )}
                         <p className="mt-2.5 text-[10.5px] leading-relaxed text-ink-faint">
-                          Written by a model from the budget and actual above. Figures in
-                          the table are computed from the dataset, not by the model.
+                          Written by a model from the budget and actual above. Figures in the table
+                          are computed from the dataset, not by the model.
                         </p>
                       </div>
                     ) : (
@@ -305,13 +302,12 @@ export function VariancePanel({
                   <div className="mt-7 rounded-md border border-dashed border-hairline p-3.5">
                     <div className="eyebrow">Note</div>
                     <p className="mt-1.5 text-[11.5px] leading-relaxed text-ink-faint">
-                      Commentary is editorial and hand-written for this demo dataset.
-                      Variance math above derives from the data.
+                      Commentary is editorial and hand-written for this demo dataset. Variance math
+                      above derives from the data.
                     </p>
                   </div>
                 </>
               )}
-
             </div>
           </>
         )}

@@ -1,10 +1,6 @@
 import { useMemo, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { scaleLinear } from "d3-scale";
-import {
-  formatCurrency,
-  varianceImpact,
-  type VarianceLine,
-} from "@/data/finance-data";
+import { formatCurrency, varianceImpact, type VarianceLine } from "@/data/finance-data";
 import { useMeasure, useStage } from "@/lib/motion";
 
 export interface WaterfallStep {
@@ -24,7 +20,14 @@ export function buildSteps(
   actualOI: number,
 ): WaterfallStep[] {
   const steps: WaterfallStep[] = [
-    { key: "budget", label: "Budgeted op. income", impact: budgetOI, start: 0, end: budgetOI, kind: "anchor" },
+    {
+      key: "budget",
+      label: "Budgeted op. income",
+      impact: budgetOI,
+      start: 0,
+      end: budgetOI,
+      kind: "anchor",
+    },
   ];
   let cursor = budgetOI;
   for (const l of lines) {
@@ -73,9 +76,10 @@ export function VarianceWaterfall({ steps, active, selected, onSelect, marks = {
     const hi = Math.max(...vals);
     // One common scale for every bar; only the headroom around it is trimmed.
     const pad = (hi - lo) * 0.05 || 1;
-    return scaleLinear().domain([lo - pad, hi + pad]).range([innerH, 0]);
+    return scaleLinear()
+      .domain([lo - pad, hi + pad])
+      .range([innerH, 0]);
   }, [steps, innerH]);
-
 
   const bandW = innerW / steps.length;
   const barW = Math.min(46, bandW * 0.56);
@@ -244,12 +248,8 @@ export function VarianceWaterfall({ steps, active, selected, onSelect, marks = {
                       cx={cx}
                       cy={innerH + 27}
                       r={3.4}
-                      fill={
-                        marks[s.key] === "generated" ? "var(--signal)" : "var(--surface)"
-                      }
-                      stroke={
-                        marks[s.key] === "generated" ? "var(--signal)" : "var(--ink-dim)"
-                      }
+                      fill={marks[s.key] === "generated" ? "var(--signal)" : "var(--surface)"}
+                      stroke={marks[s.key] === "generated" ? "var(--signal)" : "var(--ink-dim)"}
                       strokeWidth={1.4}
                       style={{
                         opacity: started ? (dim ? 0.4 : 1) : 0,
@@ -257,7 +257,6 @@ export function VarianceWaterfall({ steps, active, selected, onSelect, marks = {
                       }}
                     />
                   )}
-
 
                   <text
                     x={cx}
@@ -284,17 +283,19 @@ export function VarianceWaterfall({ steps, active, selected, onSelect, marks = {
 
 function abbrev(label: string): string {
   return (
-    {
-      "Budgeted op. income": "Budget",
-      "Actual op. income": "Actual",
-      "Platform Subscriptions": "Platform",
-      "Usage & Overages": "Usage",
-      "Professional Services": "Services",
-      "Marketplace Rev-Share": "Mktplace",
-      "Cost of Revenue": "COGS",
-      "R&D Operating Expense": "R&D",
-      "S&M Operating Expense": "S&M",
-      "G&A Operating Expense": "G&A",
-    } as Record<string, string>
-  )[label] ?? label;
+    (
+      {
+        "Budgeted op. income": "Budget",
+        "Actual op. income": "Actual",
+        "Platform Subscriptions": "Platform",
+        "Usage & Overages": "Usage",
+        "Professional Services": "Services",
+        "Marketplace Rev-Share": "Mktplace",
+        "Cost of Revenue": "COGS",
+        "R&D Operating Expense": "R&D",
+        "S&M Operating Expense": "S&M",
+        "G&A Operating Expense": "G&A",
+      } as Record<string, string>
+    )[label] ?? label
+  );
 }

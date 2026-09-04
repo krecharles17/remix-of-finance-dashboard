@@ -2,12 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { AI_MODEL } from "@/lib/ai-commentary";
 import { guardPublicAi } from "@/lib/api-guard.server";
-import {
-  MULT_MAX,
-  MULT_MIN,
-  OPEX_LABELS,
-  REVENUE_LABELS,
-} from "@/lib/scenario-from-prose";
+import { MULT_MAX, MULT_MIN, OPEX_LABELS, REVENUE_LABELS } from "@/lib/scenario-from-prose";
 
 /**
  * Turns a plain-language planning case into the multipliers that make up a
@@ -42,7 +37,6 @@ export const Route = createFileRoute("/api/scenario")({
           return new Response("Describe the planning case first.", { status: 400 });
         }
 
-
         const revenueLines = Object.entries(REVENUE_LABELS)
           .map(([k, v]) => `  "${k}": ${v}`)
           .join("\n");
@@ -64,7 +58,7 @@ export const Route = createFileRoute("/api/scenario")({
           "Rules:",
           `- Every multiplier is a number between ${MULT_MIN} and ${MULT_MAX}. 1 means unchanged, 0.7 means a thirty percent reduction, 1.2 means a twenty percent increase.`,
           "- A line the description does not mention stays at 1. Do not improvise movements nobody asked for.",
-          "- \"flat\" means exactly 1.",
+          '- "flat" means exactly 1.',
           "- label: at most four words naming the case, sentence case.",
           "- blurb: one short sentence describing the assumptions, no numerals.",
           "- Output raw JSON. No markdown, no code fences, no commentary.",
@@ -95,17 +89,20 @@ export const Route = createFileRoute("/api/scenario")({
         if (!upstream.ok) {
           const detail = await upstream.text().catch(() => "");
           console.error(`Scenario gateway failed [${upstream.status}]: ${detail}`);
-          const status =
-            upstream.status === 429 || upstream.status === 402 ? upstream.status : 502;
+          const status = upstream.status === 429 || upstream.status === 402 ? upstream.status : 502;
           return new Response("Scenario service error.", { status });
         }
 
-        const json = (await upstream.json().catch(() => null)) as
-          | { choices?: Array<{ message?: { content?: string } }> }
-          | null;
+        const json = (await upstream.json().catch(() => null)) as {
+          choices?: Array<{ message?: { content?: string } }>;
+        } | null;
         const text = json?.choices?.[0]?.message?.content ?? "";
         // Some models still wrap JSON in a fence despite being told not to.
-        const cleaned = text.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
+        const cleaned = text
+          .trim()
+          .replace(/^```(?:json)?/i, "")
+          .replace(/```$/, "")
+          .trim();
 
         let parsed: unknown;
         try {

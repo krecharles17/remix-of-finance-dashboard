@@ -1,10 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 
-import {
-  BRAND,
-  varianceImpact,
-  type VarianceLine,
-} from "@/data/finance-data";
+import { BRAND, varianceImpact, type VarianceLine } from "@/data/finance-data";
 import {
   commentaryKey,
   computedDrivers,

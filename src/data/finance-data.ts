@@ -114,7 +114,6 @@ export const ASSUMPTIONS = {
   } as Record<string, RiskFlag>,
 } as const;
 
-
 // ---------- safe arithmetic ----------
 /**
  * Divide without ever producing NaN or Infinity. Returns null when the figure
@@ -136,7 +135,6 @@ export const NOT_AVAILABLE = "—";
 export function isNum(v: number | null | undefined): v is number {
   return typeof v === "number" && Number.isFinite(v);
 }
-
 
 // ---------- deterministic PRNG ----------
 function mulberry32(seed: number) {
@@ -309,7 +307,6 @@ export function headcountCostOf(month: MonthRecord): Record<OpexKey, number> {
   };
 }
 
-
 /**
  * Human range covering the dataset, derived from the ISO `id` of the first and
  * last period ("2025-08") rather than any hardcoded year. Years are rendered
@@ -331,7 +328,6 @@ export function periodRange(months: MonthRecord[] = MONTHS): string | null {
   const to = label(months[months.length - 1]);
   return from === to ? from : `${from} — ${to}`;
 }
-
 
 // ---------- scenarios ----------
 export interface Scenario {
@@ -399,8 +395,10 @@ export function aggregate(month: MonthRecord, scenario: Scenario): Aggregate {
   // Remixed data is routinely incomplete: coerce every input to a finite
   // number so sums stay printable, and let ratios below resolve to null.
   const n = (v: number | undefined, mult: number | undefined) =>
-    Math.round((Number.isFinite(v as number) ? (v as number) : 0) *
-      (Number.isFinite(mult as number) ? (mult as number) : 1));
+    Math.round(
+      (Number.isFinite(v as number) ? (v as number) : 0) *
+        (Number.isFinite(mult as number) ? (mult as number) : 1),
+    );
 
   const rev = month.revenue ?? ({} as MonthRecord["revenue"]);
   const rm = scenario.revenueMult ?? ({} as Scenario["revenueMult"]);
@@ -448,7 +446,6 @@ export function aggregate(month: MonthRecord, scenario: Scenario): Aggregate {
     cashBalance: Number.isFinite(month.cashBalance) ? month.cashBalance : 0,
   };
 }
-
 
 // ---------- flow vs stock ----------
 /**
@@ -516,10 +513,7 @@ export function foldValues(values: Array<number | undefined>, rule: AggRule): nu
  * is computed from period totals — never averaged from monthly ratios, which
  * is a different and wrong number.
  */
-export function aggregatePeriod(
-  months: MonthRecord[],
-  scenario: Scenario,
-): Aggregate {
+export function aggregatePeriod(months: MonthRecord[], scenario: Scenario): Aggregate {
   const per = months.map((m) => aggregate(m, scenario));
   const fold = (field: MonthNumericField, pick: (a: Aggregate) => number) =>
     foldValues(per.map(pick), MONTH_FIELD_RULES[field]);
@@ -571,18 +565,12 @@ export function aggregatePeriod(
  * Annualised run rate. A rate, not a flow: take it from the final month of the
  * period and never sum it across months.
  */
-export function annualisedRunRate(
-  months: MonthRecord[],
-  scenario: Scenario,
-): number {
+export function annualisedRunRate(months: MonthRecord[], scenario: Scenario): number {
   const last = months[months.length - 1];
   if (!last) return 0;
   const a = aggregate(last, scenario);
-  return (
-    (a.revenueByLine.platform + a.revenueByLine.usage + a.revenueByLine.marketplace) * 12
-  );
+  return (a.revenueByLine.platform + a.revenueByLine.usage + a.revenueByLine.marketplace) * 12;
 }
-
 
 // ---------- periods: month, quarter, year to date ----------
 export type Granularity = "month" | "quarter" | "ytd";
@@ -639,10 +627,7 @@ function monthNameOf(m: MonthRecord): string {
 }
 
 /** Every period of the given granularity that the dataset can support. */
-export function periodsFor(
-  granularity: Granularity,
-  months: MonthRecord[] = MONTHS,
-): Period[] {
+export function periodsFor(granularity: Granularity, months: MonthRecord[] = MONTHS): Period[] {
   // Never trust input order: a remixer pasting an unsorted export would
   // otherwise get quarters and cumulative spans in the wrong sequence.
   const src = (Array.isArray(months) ? [...months] : []).sort((a, b) =>
@@ -666,9 +651,7 @@ export function periodsFor(
     return src.map((m) => {
       const fy = fiscalYearOf(m.id);
       const idx = fiscalIndexOf(m.id);
-      const ms = src.filter(
-        (x) => fiscalYearOf(x.id) === fy && fiscalIndexOf(x.id) <= idx,
-      );
+      const ms = src.filter((x) => fiscalYearOf(x.id) === fy && fiscalIndexOf(x.id) <= idx);
       const expected = idx + 1;
       return {
         id: `ytd-${m.id}`,
@@ -729,9 +712,7 @@ export function priorPeriodOf(period: Period, all: Period[]): Period | null {
     const idx = fiscalIndexOf(last.id);
     const prior = all.find((p) => {
       const l = p.months[p.months.length - 1];
-      return (
-        !!l && fiscalYearOf(l.id) === fy - 1 && fiscalIndexOf(l.id) === idx
-      );
+      return !!l && fiscalYearOf(l.id) === fy - 1 && fiscalIndexOf(l.id) === idx;
     });
     return prior ?? null;
   }
@@ -740,7 +721,6 @@ export function priorPeriodOf(period: Period, all: Period[]): Period | null {
   const prev = all[i - 1];
   return prev.months.length === period.months.length ? prev : null;
 }
-
 
 /** "vs prior month" / "vs prior quarter" / "vs prior year to date". */
 export function priorPeriodCaption(granularity: Granularity): string {
@@ -753,11 +733,7 @@ export function priorPeriodCaption(granularity: Granularity): string {
 
 /** How the period is named in running copy: "quarter", "month", "year to date". */
 export function granularityNoun(granularity: Granularity): string {
-  return granularity === "month"
-    ? "month"
-    : granularity === "quarter"
-      ? "quarter"
-      : "year to date";
+  return granularity === "month" ? "month" : granularity === "quarter" ? "quarter" : "year to date";
 }
 
 /** Plain sentence naming a partial period, or null when it is complete. */
@@ -765,7 +741,6 @@ export function incompleteNote(period: Period): string | null {
   if (period.complete || period.granularity === "month") return null;
   return `Incomplete ${granularityNoun(period.granularity)} — ${period.months.length} of ${period.expectedMonths} months present in the dataset.`;
 }
-
 
 // ---------- AR aging ----------
 export type RiskFlag = "low" | "watch" | "high" | "critical";
@@ -852,24 +827,121 @@ export function makeInvoices(rows: InvoiceInput[]): Invoice[] {
 }
 
 const AR_SEED: InvoiceInput[] = [
-  { customer: "Halcyon Logistics", segment: "Enterprise", amount: 412_500, daysPastDue: 97, risk: "critical", note: "Procurement re-org; PO reissue pending" },
-  { customer: "Wrenfield Health", segment: "Enterprise", amount: 288_000, daysPastDue: 64, risk: "high", note: "Disputing overage line on Feb usage" },
-  { customer: "Ardent Retail Group", segment: "Mid-market", amount: 96_400, daysPastDue: 71, risk: "high", note: "Two broken payment promises" },
-  { customer: "Cobalt Manufacturing", segment: "Enterprise", amount: 351_000, daysPastDue: 22, risk: "watch", note: "AP batch runs monthly on the 28th" },
-  { customer: "Northgate Financial", segment: "Enterprise", amount: 505_000, daysPastDue: 4, risk: "low", note: "Confirmed in this week's ACH run" },
-  { customer: "Verity Analytics", segment: "Mid-market", amount: 74_800, daysPastDue: 45, risk: "watch", note: "New AP contact, invoice re-sent" },
-  { customer: "Larkspur Media", segment: "SMB", amount: 18_200, daysPastDue: 118, risk: "critical", note: "No response in 6 weeks; collections queue" },
-  { customer: "Pinnacle Legal", segment: "Mid-market", amount: 61_500, daysPastDue: 0, risk: "low", note: "Current — net 30, issued last week" },
-  { customer: "Solstice Energy", segment: "Enterprise", amount: 264_300, daysPastDue: 33, risk: "watch", note: "Awaiting signed SOW amendment" },
-  { customer: "Fernbrook Labs", segment: "SMB", amount: 27_900, daysPastDue: 88, risk: "high", note: "Card on file failed twice" },
-  { customer: "Atlas Freight", segment: "Mid-market", amount: 112_000, daysPastDue: 12, risk: "low", note: "Scheduled wire, 15th" },
-  { customer: "Kestrel Insurance", segment: "Enterprise", amount: 197_600, daysPastDue: 58, risk: "high", note: "Tax exemption cert holding release" },
-  { customer: "Drayton Foods", segment: "SMB", amount: 22_450, daysPastDue: 0, risk: "low", note: "Current — auto-charge enabled" },
-  { customer: "Orion Semiconductor", segment: "Enterprise", amount: 338_700, daysPastDue: 9, risk: "low", note: "Approved, in payment run" },
+  {
+    customer: "Halcyon Logistics",
+    segment: "Enterprise",
+    amount: 412_500,
+    daysPastDue: 97,
+    risk: "critical",
+    note: "Procurement re-org; PO reissue pending",
+  },
+  {
+    customer: "Wrenfield Health",
+    segment: "Enterprise",
+    amount: 288_000,
+    daysPastDue: 64,
+    risk: "high",
+    note: "Disputing overage line on Feb usage",
+  },
+  {
+    customer: "Ardent Retail Group",
+    segment: "Mid-market",
+    amount: 96_400,
+    daysPastDue: 71,
+    risk: "high",
+    note: "Two broken payment promises",
+  },
+  {
+    customer: "Cobalt Manufacturing",
+    segment: "Enterprise",
+    amount: 351_000,
+    daysPastDue: 22,
+    risk: "watch",
+    note: "AP batch runs monthly on the 28th",
+  },
+  {
+    customer: "Northgate Financial",
+    segment: "Enterprise",
+    amount: 505_000,
+    daysPastDue: 4,
+    risk: "low",
+    note: "Confirmed in this week's ACH run",
+  },
+  {
+    customer: "Verity Analytics",
+    segment: "Mid-market",
+    amount: 74_800,
+    daysPastDue: 45,
+    risk: "watch",
+    note: "New AP contact, invoice re-sent",
+  },
+  {
+    customer: "Larkspur Media",
+    segment: "SMB",
+    amount: 18_200,
+    daysPastDue: 118,
+    risk: "critical",
+    note: "No response in 6 weeks; collections queue",
+  },
+  {
+    customer: "Pinnacle Legal",
+    segment: "Mid-market",
+    amount: 61_500,
+    daysPastDue: 0,
+    risk: "low",
+    note: "Current — net 30, issued last week",
+  },
+  {
+    customer: "Solstice Energy",
+    segment: "Enterprise",
+    amount: 264_300,
+    daysPastDue: 33,
+    risk: "watch",
+    note: "Awaiting signed SOW amendment",
+  },
+  {
+    customer: "Fernbrook Labs",
+    segment: "SMB",
+    amount: 27_900,
+    daysPastDue: 88,
+    risk: "high",
+    note: "Card on file failed twice",
+  },
+  {
+    customer: "Atlas Freight",
+    segment: "Mid-market",
+    amount: 112_000,
+    daysPastDue: 12,
+    risk: "low",
+    note: "Scheduled wire, 15th",
+  },
+  {
+    customer: "Kestrel Insurance",
+    segment: "Enterprise",
+    amount: 197_600,
+    daysPastDue: 58,
+    risk: "high",
+    note: "Tax exemption cert holding release",
+  },
+  {
+    customer: "Drayton Foods",
+    segment: "SMB",
+    amount: 22_450,
+    daysPastDue: 0,
+    risk: "low",
+    note: "Current — auto-charge enabled",
+  },
+  {
+    customer: "Orion Semiconductor",
+    segment: "Enterprise",
+    amount: 338_700,
+    daysPastDue: 9,
+    risk: "low",
+    note: "Approved, in payment run",
+  },
 ];
 
 export const INVOICES: Invoice[] = makeInvoices(AR_SEED);
-
 
 const amountOf = (i: Invoice) => (Number.isFinite(i.amount) ? i.amount : 0);
 
@@ -880,9 +952,10 @@ export const AR_BUCKETS = (["Current", "1–30", "31–60", "61–90", "90+"] as
 }));
 
 export const AR_TOTAL = INVOICES.reduce((s, i) => s + amountOf(i), 0);
-export const AR_AT_RISK = INVOICES.filter(
-  (i) => i.risk === "high" || i.risk === "critical",
-).reduce((s, i) => s + amountOf(i), 0);
+export const AR_AT_RISK = INVOICES.filter((i) => i.risk === "high" || i.risk === "critical").reduce(
+  (s, i) => s + amountOf(i),
+  0,
+);
 
 // ---------- 13-week cash forecast ----------
 export interface ForecastWeek {
@@ -928,7 +1001,9 @@ export function forecastInputs(
   };
   if (!Array.isArray(months) || months.length === 0) return empty;
 
-  const window = Number.isFinite(trailingMonths) ? trailingMonths : ASSUMPTIONS.FORECAST_TRAILING_MONTHS;
+  const window = Number.isFinite(trailingMonths)
+    ? trailingMonths
+    : ASSUMPTIONS.FORECAST_TRAILING_MONTHS;
   const trailing = months.slice(-Math.max(1, Math.round(window)));
   const fin = (v: number | undefined) => (Number.isFinite(v as number) ? (v as number) : 0);
 
@@ -961,8 +1036,7 @@ export function forecastInputs(
     safeDiv(monthly, Math.max(0.1, ASSUMPTIONS.WEEKS_PER_MONTH)) ?? 0;
 
   const weeklyOutflow = perWeek(monthlyCost);
-  const weeklyCollections =
-    perWeek(monthlyRevenue) + ((safeDiv(recoverable, horizonWeeks) ?? 0));
+  const weeklyCollections = perWeek(monthlyRevenue) + (safeDiv(recoverable, horizonWeeks) ?? 0);
 
   return {
     weeklyOutflow,
@@ -995,8 +1069,8 @@ export function buildForecast(
 
   // Lumps are re-timed, not added: what lands in a heavy week is taken out of
   // the smooth run rate, so the 13-week total matches the run rate exactly.
-  const payrollLump = inputs.weeklyPayroll * ASSUMPTIONS.WEEKS_PER_MONTH *
-    ASSUMPTIONS.PAYROLL_LUMP_SHARE;
+  const payrollLump =
+    inputs.weeklyPayroll * ASSUMPTIONS.WEEKS_PER_MONTH * ASSUMPTIONS.PAYROLL_LUMP_SHARE;
   const collectionsLump =
     weeklyCollections * ASSUMPTIONS.WEEKS_PER_MONTH * ASSUMPTIONS.COLLECTIONS_LUMP_SHARE;
 
@@ -1014,8 +1088,7 @@ export function buildForecast(
   // week is taken back out of the smooth run rate, so the 13-week total equals
   // the derived run rate exactly and the runway readout agrees with the chart.
   const payrollSmoothing = safeDiv(payrollLump * countWeeks(isPayrollWeek), weeks) ?? 0;
-  const collectionsSmoothing =
-    safeDiv(collectionsLump * countWeeks(isCollectionWeek), weeks) ?? 0;
+  const collectionsSmoothing = safeDiv(collectionsLump * countWeeks(isCollectionWeek), weeks) ?? 0;
 
   const scale = Math.max(weeklyOutflow, weeklyCollections, 1);
   const out: ForecastWeek[] = [];
@@ -1057,14 +1130,12 @@ export function derivedMonthlyBurn(
   return Math.max(0, (i.weeklyOutflow - i.weeklyCollections) * ASSUMPTIONS.WEEKS_PER_MONTH);
 }
 
-
 /** Months of runway, or null when burn is zero, negative, or unknown. */
 export function runwayMonths(cash: number, monthlyBurn: number): number | null {
   if (!Number.isFinite(cash) || !Number.isFinite(monthlyBurn)) return null;
   if (monthlyBurn <= 0) return null;
   return safeDiv(cash, monthlyBurn);
 }
-
 
 // ---------- variance ----------
 export interface VarianceCommentary {
@@ -1094,26 +1165,26 @@ export interface VarianceLine {
  * data; the waterfall and variance math derive automatically.
  */
 export const VARIANCE_COMMENTARY: Record<string, VarianceCommentary | undefined> = {
-    usage: {
-      narrative:
-        "Usage and overage revenue outran the plan. Two high-volume data customers ran unplanned backfill jobs, which pushed metered consumption well past their committed tiers. This is real cash but it is not durable — treat roughly half of the beat as one-time.",
-      drivers: [
-        { label: "Metered volume", value: "+18% vs plan" },
-        { label: "Customers over commit", value: "11 (plan: 6)" },
-        { label: "Estimated one-time portion", value: "~52% of the beat" },
-      ],
-      owner: "Dana Okafor · VP Revenue",
-    },
-    sm: {
-      narrative:
-        "Sales and marketing overspent. A late decision to sponsor an additional industry conference pulled forward roughly a quarter of the events budget, and paid acquisition costs rose as we pushed harder on the enterprise segment. Pipeline created supports the spend, but CAC efficiency deteriorated this month.",
-      drivers: [
-        { label: "Events pull-forward", value: "$96K" },
-        { label: "Blended CAC", value: "+14% MoM" },
-        { label: "Pipeline created", value: "$4.1M (plan: $3.6M)" },
-      ],
-      owner: "Dana Okafor · VP Revenue",
-    },
+  usage: {
+    narrative:
+      "Usage and overage revenue outran the plan. Two high-volume data customers ran unplanned backfill jobs, which pushed metered consumption well past their committed tiers. This is real cash but it is not durable — treat roughly half of the beat as one-time.",
+    drivers: [
+      { label: "Metered volume", value: "+18% vs plan" },
+      { label: "Customers over commit", value: "11 (plan: 6)" },
+      { label: "Estimated one-time portion", value: "~52% of the beat" },
+    ],
+    owner: "Dana Okafor · VP Revenue",
+  },
+  sm: {
+    narrative:
+      "Sales and marketing overspent. A late decision to sponsor an additional industry conference pulled forward roughly a quarter of the events budget, and paid acquisition costs rose as we pushed harder on the enterprise segment. Pipeline created supports the spend, but CAC efficiency deteriorated this month.",
+    drivers: [
+      { label: "Events pull-forward", value: "$96K" },
+      { label: "Blended CAC", value: "+14% MoM" },
+      { label: "Pipeline created", value: "$4.1M (plan: $3.6M)" },
+    ],
+    owner: "Dana Okafor · VP Revenue",
+  },
 };
 
 /**
@@ -1131,16 +1202,40 @@ export function budgetForPeriod(months: MonthRecord[]): {
   const b = (m: MonthRecord) => m?.budget ?? ({} as MonthRecord["budget"]);
   return {
     revenue: {
-      platform: foldValues(pick((m) => b(m).revenue?.platform), MONTH_FIELD_RULES["budget.revenue.platform"]),
-      usage: foldValues(pick((m) => b(m).revenue?.usage), MONTH_FIELD_RULES["budget.revenue.usage"]),
-      services: foldValues(pick((m) => b(m).revenue?.services), MONTH_FIELD_RULES["budget.revenue.services"]),
-      marketplace: foldValues(pick((m) => b(m).revenue?.marketplace), MONTH_FIELD_RULES["budget.revenue.marketplace"]),
+      platform: foldValues(
+        pick((m) => b(m).revenue?.platform),
+        MONTH_FIELD_RULES["budget.revenue.platform"],
+      ),
+      usage: foldValues(
+        pick((m) => b(m).revenue?.usage),
+        MONTH_FIELD_RULES["budget.revenue.usage"],
+      ),
+      services: foldValues(
+        pick((m) => b(m).revenue?.services),
+        MONTH_FIELD_RULES["budget.revenue.services"],
+      ),
+      marketplace: foldValues(
+        pick((m) => b(m).revenue?.marketplace),
+        MONTH_FIELD_RULES["budget.revenue.marketplace"],
+      ),
     },
-    cogs: foldValues(pick((m) => b(m).cogs), MONTH_FIELD_RULES["budget.cogs"]),
+    cogs: foldValues(
+      pick((m) => b(m).cogs),
+      MONTH_FIELD_RULES["budget.cogs"],
+    ),
     opex: {
-      rd: foldValues(pick((m) => b(m).opex?.rd), MONTH_FIELD_RULES["budget.opex.rd"]),
-      sm: foldValues(pick((m) => b(m).opex?.sm), MONTH_FIELD_RULES["budget.opex.sm"]),
-      ga: foldValues(pick((m) => b(m).opex?.ga), MONTH_FIELD_RULES["budget.opex.ga"]),
+      rd: foldValues(
+        pick((m) => b(m).opex?.rd),
+        MONTH_FIELD_RULES["budget.opex.rd"],
+      ),
+      sm: foldValues(
+        pick((m) => b(m).opex?.sm),
+        MONTH_FIELD_RULES["budget.opex.sm"],
+      ),
+      ga: foldValues(
+        pick((m) => b(m).opex?.ga),
+        MONTH_FIELD_RULES["budget.opex.ga"],
+      ),
     },
   };
 }
@@ -1201,7 +1296,6 @@ export function budgetedOperatingIncome(months: MonthRecord[]): number {
   return rev - b.cogs - b.opex.rd - b.opex.sm - b.opex.ga;
 }
 
-
 // ---------- formatting ----------
 // All money and percentages are formatted here, driven by BRAND.currency and
 // BRAND.locale. Nothing outside this file should call toLocaleString or
@@ -1260,8 +1354,7 @@ export function formatCurrency(
     // placement still follow the locale.
     if (abs >= 1_000_000)
       return `${sign}${withSymbol(`${centsFormatter.format(abs / 1_000_000)}M`)}`;
-    if (abs >= 1_000)
-      return `${sign}${withSymbol(`${wholeFormatter.format(abs / 1_000)}K`)}`;
+    if (abs >= 1_000) return `${sign}${withSymbol(`${wholeFormatter.format(abs / 1_000)}K`)}`;
     return `${sign}${withSymbol(wholeFormatter.format(abs))}`;
   }
   const body = opts.cents ? centsFormatter.format(abs) : wholeFormatter.format(abs);
@@ -1319,8 +1412,7 @@ export function validateDataset(
       if (!m.revenue) problems.push(`${where} is missing its revenue block.`);
       else
         for (const p of PRODUCT_LINES)
-          if (!fin(m.revenue[p.key]))
-            problems.push(`${where} revenue.${p.key} is not a number.`);
+          if (!fin(m.revenue[p.key])) problems.push(`${where} revenue.${p.key} is not a number.`);
       if (!m.cogs) problems.push(`${where} is missing its cogs block.`);
       if (!m.opex) problems.push(`${where} is missing its opex block.`);
       else
@@ -1361,6 +1453,3 @@ if (import.meta.env?.DEV) {
     console.warn(`[finance-data] ${problem}`);
   }
 }
-
-
-

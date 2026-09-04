@@ -72,9 +72,7 @@ describe("keys, guards and model choice", () => {
   });
 
   it("recognises a generated record and rejects malformed ones", () => {
-    expect(
-      isGeneratedCommentary({ generated: true, narrative: prose, drivers: [] }),
-    ).toBe(true);
+    expect(isGeneratedCommentary({ generated: true, narrative: prose, drivers: [] })).toBe(true);
     expect(isGeneratedCommentary({ narrative: prose, drivers: [] })).toBe(false);
     expect(isGeneratedCommentary(null)).toBe(false);
     expect(
@@ -117,7 +115,10 @@ describe("streamCommentary", () => {
   afterEach(() => vi.unstubAllGlobals());
 
   it("streams deltas and returns the validated narrative", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => streamOf([prose.slice(0, 20), prose.slice(20)])));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => streamOf([prose.slice(0, 20), prose.slice(20)])),
+    );
     const seen: string[] = [];
     const text = await streamCommentary(body, (c) => seen.push(c));
     expect(seen).toHaveLength(2);
@@ -125,7 +126,10 @@ describe("streamCommentary", () => {
   });
 
   it("aborts the moment a digit arrives mid-stream", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => streamOf([prose, " Up 12 percent."])));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => streamOf([prose, " Up 12 percent."])),
+    );
     const seen: string[] = [];
     await expect(streamCommentary(body, (c) => seen.push(c))).rejects.toBeInstanceOf(
       NarrativeRejected,
@@ -134,10 +138,16 @@ describe("streamCommentary", () => {
   });
 
   it("reports rate limiting and exhausted credits in plain language", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 429 })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("", { status: 429 })),
+    );
     await expect(streamCommentary(body, () => {})).rejects.toThrow(/Rate limited/);
 
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 402 })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("", { status: 402 })),
+    );
     await expect(streamCommentary(body, () => {})).rejects.toThrow(/credits/);
   });
 });

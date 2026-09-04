@@ -73,10 +73,7 @@ function KpiCell({ kpi, index }: { kpi: Kpi; index: number }) {
         }}
       >
         {/* ---- front: the figure, unchanged ---- */}
-        <div
-          className="px-5 py-3 lg:px-6"
-          style={{ backfaceVisibility: "hidden" }}
-        >
+        <div className="px-5 py-3 lg:px-6" style={{ backfaceVisibility: "hidden" }}>
           <div className="flex items-baseline gap-2">
             <span className="eyebrow">{kpi.label}</span>
           </div>
@@ -122,10 +119,7 @@ function KpiCell({ kpi, index }: { kpi: Kpi; index: number }) {
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
           <span className="eyebrow">{kpi.label}</span>
-          <span
-            id={hintId}
-            className="mt-1.5 text-[11.5px] leading-snug text-ink-dim"
-          >
+          <span id={hintId} className="mt-1.5 text-[11.5px] leading-snug text-ink-dim">
             {kpi.hint}
           </span>
         </div>

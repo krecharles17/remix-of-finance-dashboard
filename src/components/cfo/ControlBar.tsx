@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import type { Granularity, Period, Scenario } from "@/data/finance-data";
-import {
-  isGeneratedScenario,
-  type GeneratedScenario,
-} from "@/lib/scenario-from-prose";
+import { isGeneratedScenario, type GeneratedScenario } from "@/lib/scenario-from-prose";
 import {
   MultiplierPopover,
   ScenarioComposerRow,
@@ -63,8 +60,7 @@ export function ControlBar({
   }
 
   const selected = scenarios.find((s) => s.key === scenarioKey) ?? null;
-  const generatedSelected =
-    selected && isGeneratedScenario(selected) ? selected : null;
+  const generatedSelected = selected && isGeneratedScenario(selected) ? selected : null;
 
   // The popover exists only while a generated scenario is selected.
   useEffect(() => {
@@ -87,7 +83,6 @@ export function ControlBar({
             aria-label="Planning scenario"
             className="flex min-w-0 flex-initial gap-1 overflow-x-auto py-px [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
-
             {scenarios.map((s) => {
               const on = s.key === scenarioKey;
               const gen = isGeneratedScenario(s);

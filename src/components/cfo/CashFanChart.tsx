@@ -43,16 +43,15 @@ export function CashFanChart({
   const innerW = Math.max(80, width - m.left - m.right);
   const innerH = height - m.top - m.bottom;
 
-  const x = useMemo(
-    () => scaleLinear().domain([1, 13]).range([0, innerW]),
-    [innerW],
-  );
+  const x = useMemo(() => scaleLinear().domain([1, 13]).range([0, innerW]), [innerW]);
   const y = useMemo(() => {
     if (data.length === 0) return scaleLinear().domain([0, 1]).range([innerH, 0]);
     const lo = Math.min(...data.map((d) => d.p10));
     const hi = Math.max(...data.map((d) => d.p90));
     const pad = Math.max(1, (hi - lo) * 0.12);
-    return scaleLinear().domain([lo - pad, hi + pad]).range([innerH, 0]);
+    return scaleLinear()
+      .domain([lo - pad, hi + pad])
+      .range([innerH, 0]);
   }, [data, innerH]);
 
   const outer = useMemo(
@@ -109,11 +108,7 @@ export function CashFanChart({
             <g transform={`translate(${m.left},${m.top})`}>
               {y.ticks(4).map((t) => (
                 <g key={t} transform={`translate(0,${y(t)})`}>
-                  <line
-                    x2={innerW}
-                    stroke="var(--grid-line)"
-                    strokeDasharray="2 4"
-                  />
+                  <line x2={innerW} stroke="var(--grid-line)" strokeDasharray="2 4" />
                   <text
                     x={innerW + 8}
                     dy="0.32em"
@@ -196,10 +191,7 @@ export function CashFanChart({
           <div
             className="pointer-events-none absolute top-2 rounded-md border border-hairline bg-popover/95 px-3 py-2 shadow-xl"
             style={{
-              left: Math.min(
-                Math.max(x(hovered.week) + m.left - 70, 0),
-                Math.max(0, width - 152),
-              ),
+              left: Math.min(Math.max(x(hovered.week) + m.left - 70, 0), Math.max(0, width - 152)),
             }}
           >
             <div className="eyebrow">Week {hovered.week}</div>
@@ -267,11 +259,11 @@ function HiringDrag({
   const months = runwayMonths(startCash, burn);
   // Runway counts forward from the last closed period in the data, not a fixed
   // date, so it stays correct after the actuals are replaced.
-  const [ly, lm] = String(LATEST?.id ?? "").split("-").map(Number);
+  const [ly, lm] = String(LATEST?.id ?? "")
+    .split("-")
+    .map(Number);
   const runwayDate =
-    Number.isFinite(ly) && Number.isFinite(lm)
-      ? new Date(ly, lm - 1 + 1, 0)
-      : new Date();
+    Number.isFinite(ly) && Number.isFinite(lm) ? new Date(ly, lm - 1 + 1, 0) : new Date();
   if (months !== null) {
     runwayDate.setMonth(runwayDate.getMonth() + Math.floor(months));
     runwayDate.setDate(runwayDate.getDate() + Math.round((months % 1) * 30));
@@ -294,11 +286,7 @@ function HiringDrag({
           <div
             className="num mt-1 text-lg font-medium"
             style={{
-              color: months === null
-                ? "var(--ink-faint)"
-                : tight
-                  ? "var(--ember)"
-                  : "var(--mint)",
+              color: months === null ? "var(--ink-faint)" : tight ? "var(--ember)" : "var(--mint)",
             }}
           >
             {months === null
@@ -314,7 +302,6 @@ function HiringDrag({
           </div>
         </div>
       </div>
-
 
       <div
         ref={trackRef}

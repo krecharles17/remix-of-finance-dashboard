@@ -53,11 +53,7 @@ export class ScenarioRejected extends Error {
   }
 }
 
-function readMult(
-  bag: Record<string, unknown>,
-  key: string,
-  where: string,
-): number {
+function readMult(bag: Record<string, unknown>, key: string, where: string): number {
   if (!(key in bag)) {
     throw new ScenarioRejected(`The model left out the ${where} multiplier.`);
   }
@@ -132,7 +128,12 @@ export function parseScenario(
   const label = readText(obj, "label", 40);
   const blurb = readText(obj, "blurb", 160);
 
-  let key = `gen-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "scenario"}`;
+  let key = `gen-${
+    label
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || "scenario"
+  }`;
   let n = 2;
   const taken = new Set(existingKeys);
   const base = key;
