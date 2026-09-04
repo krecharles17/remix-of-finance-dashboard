@@ -1,0 +1,19 @@
+section,id,label,platform_subscriptions,usage_overages,professional_services,marketplace_revshare,cloud_hosting,customer_support,service_delivery,rnd,sales_marketing,general_admin,headcount,closing_cash
+month,2026-05,May 2026,921000,244000,104000,57000,148000,76000,70000,571000,612000,308000,144,9420000
+month,2026-06,June 2026,929000,248000,109000,58000,150000,77000,71000,578000,619000,311000,145,9230000
+month,2026-07,July 2026,937000,252000,111000,59000,151000,78000,72000,584000,626000,315000,146,9040000
+
+section,id,label,platform_subscriptions,usage_overages,professional_services,marketplace_revshare,cloud_hosting,customer_support,service_delivery,rnd,sales_marketing,general_admin,headcount,closing_cash
+budget,2026-07,July 2026 budget,950000,240000,120000,55000,145000,74000,68000,570000,590000,300000,148,9300000
+
+section,invoice_id,customer,amount,days_past_due,risk
+invoice,INV-2041,Harbourline Freight,84000,12,low
+invoice,INV-2052,Calder Analytics,146000,47,watch
+invoice,INV-2063,Meridian Foodworks,61000,93,high
+invoice,INV-2074,Pallister Retail,19500,124,critical
+
+section,notes
+note,"Risk uses the four values the app renders: low / watch / high / critical. If your system only has three levels, medium is accepted and maps to watch."
+note,"Customer segment and the collection note are not columns. They are derived from the invoice amount and its aging. Edit SEGMENT_BAND_ENTERPRISE, SEGMENT_BAND_MID_MARKET and AGING_NOTES in src/data/finance-data.ts to change how."
+note,"Payroll per opex category is not a column either. It is derived from PAYROLL_SHARE_BY_OPEX in the same file."
+note,"The 13-week forecast is derived from these months and invoices. There is nothing extra to supply, but review the assumption constants at the top of the data file."

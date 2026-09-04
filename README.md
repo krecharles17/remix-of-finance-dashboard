@@ -1,0 +1,31 @@
+# CFO Command Center
+
+A finance reporting dashboard template built for monthly close review: an animated money-flow Sankey that traces every dollar from revenue lines through cost of revenue and operating expense into profit, a 13-week cash fan chart with a draggable hiring what-if that reprices the runway date, a budget-vs-actual variance waterfall with a click-through commentary panel, and a compact AR aging table with collection-risk flags. The bundled company is fictional and every figure in this project is synthetic demo data — no real financials are included.
+
+To rebrand it, edit the `BRAND` object at the top of `src/data/finance-data.ts`: company name, masthead eyebrow and title, footer note, currency, and locale all read from there, so nothing else needs touching for a rename or a currency change.
+
+To use your own data, edit the same file: replace `MONTHS` (or `buildMonths`) with your monthly actuals and budget conforming to `MonthRecord`, replace `INVOICES` with your AR ledger built through `makeInvoices()`, and adjust `SCENARIOS` to your planning cases. Every KPI, the Sankey, the cash forecast, the waterfall, and the AR aging derive automatically from those inputs — including the 13-week forecast and the runway, which read weekly outflow from the trailing months' costs and weekly collections from trailing revenue plus expected receipts on open receivables.
+
+**Month, quarter and year to date.** Supply monthly records only; quarter and YTD views are derived, and they follow one rule you need to know before swapping data in: flows sum, stocks do not. Revenue, cost of revenue and operating expense add across the months of a period. Closing cash and headcount take the value of the final month, because they are positions rather than flows — summing three months of closing cash would treble the balance and take runway with it. The rule is declared per field in `MONTH_FIELD_RULES`, so a new field on `MonthRecord` has to state whether it is a `sum` or a `last`. Ratios such as gross margin and operating margin are computed from period totals rather than averaged across months, ARR is annualised from the final month, net burn sums and is labelled with its period, and runway divides period-end cash by average monthly burn across the period. Budget aggregates by the same rules, so the waterfall compares period totals to period totals, and scenario multipliers apply per month before aggregation. Set `fiscalYearStartMonth` in `BRAND` to place your quarters and year to date; the demo data runs August through July, so it ships as 8. A quarter with months missing from the dataset is labelled incomplete beside the figures. Receivables carry days past due and no dates, so the AR panel stays a present-day snapshot whatever period is selected, and says so.
+
+Anything the dashboard infers rather than reads is a named constant in `ASSUMPTIONS` at the top of the data file, with `AGING_NOTES` alongside it: forecast trailing window, AR recovery rates by risk, payroll and collections lumpiness, forecast band width, payroll share per opex category, invoice segment bands, and the risk vocabulary map. Review them once when you connect real numbers. Customer segment, the collection note, and payroll per opex category are optional in the import and derived from those constants, so there is nothing to invent. Invoice risk is `low`, `watch`, `high` or `critical`; `medium` is accepted as an alias for `watch`.
+
+The running app carries the same guide: "Template instructions" in the control bar opens a panel with the shape the model expects and a prompt you can copy. The fastest path is to paste your figures into Lovable chat and ask the agent to rewrite `src/data/finance-data.ts`, because mapping your chart of accounts onto four revenue lines, three cost-of-revenue categories and three operating expense categories is the fiddly part and the agent does it while keeping the types intact. `public/sample-data.csv` shows the exact columns — monthly actuals and budget, plus an invoice ledger with customer, amount, days past due and risk flag — and doubles as a template for your own export.
+
+
+Variance commentary resolves in three layers. **Authored** narratives in `VARIANCE_COMMENTARY` come first — two ship as examples and are written for the synthetic dataset, so rewrite or delete them when you connect real data. **Generated** commentary comes second: click "Expand this read with AI" in the slide-out, or generate every uncommented line from the waterfall header, and prose streams in from the Lovable AI gateway with no API key to supply. It is held in memory for the session only and cleared on reload, because commentary describes one specific set of figures. **Computed** commentary is the floor: a deterministic read from budget versus actual that always renders, so the dashboard is complete and presentable with zero AI calls made.
+
+The model writes prose and nothing else. It is given only figures the app holds, is forbidden from writing numerals or inventing operational facts, and its output is validated before it reaches the UI; the drivers shown beside a generated narrative are computed from your data. Generated content is labelled wherever it appears. The model is named once, in `AI_MODEL` in `src/lib/ai-commentary.ts`.
+
+**Scenario from prose.** Type a planning case into the masthead input — "S&M pullback of thirty percent, hosting renegotiation lands next quarter, services flat" — and it becomes a selectable scenario that re-renders the whole dashboard. This is the one place the model emits numbers, and only because a multiplier is a stated modelling assumption rather than a booked figure: every derived multiplier is shown plainly, is editable after generation, and generated scenarios are visibly distinct from the four authored presets. The payload is validated in full against the `Scenario` type before it reaches state, and any multiplier outside plausible planning bounds is rejected with a reason rather than clamped silently. Generated scenarios live in memory for the session only. The four presets keep working with zero AI calls made.
+
+## Development
+
+Requires Node.js and npm.
+
+```sh
+npm i
+npm run dev
+```
+
+Built with TanStack Start, TypeScript, React, Tailwind CSS, and D3.
