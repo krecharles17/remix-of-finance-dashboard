@@ -7,7 +7,9 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   // src/integrations/supabase/* and routeTree.gen.ts are generated files.
-  { ignores: ["dist", ".output", ".vinxi", "src/integrations/supabase/**", "src/routeTree.gen.ts"] },
+  {
+    ignores: ["dist", ".output", ".vinxi", "src/integrations/supabase/**", "src/routeTree.gen.ts"],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
